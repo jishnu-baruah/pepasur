@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.IO Connection Test</title>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Connection Test</h1>
+    <div id="status">Connecting...</div>
+    <div id="logs"></div>
+
+    <script>
+        const socketUrl = 'http://172.23.160.1:3001';
+        const socket = io(socketUrl, {
+            transports: ['websocket', 'polling'],
+            timeout: 30000,
+            forceNew: true,
+            reconnection: true,
+            reconnectionAttempts: 5,
+            reconnectionDelay: 2000,
+            reconnectionDelayMax: 10000,
+            maxReconnectionAttempts: 5,
+            withCredentials: false,
+            autoConnect: true
+        });
+
+        const statusDiv = document.getElementById('status');
+        const logsDiv = document.getElementById('logs');
+
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logsDiv.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            console.log(message);
+        }
+
+        socket.on('connect', () => {
+            statusDiv.innerHTML = '✅ Connected to server: ' + socket.id;
+            statusDiv.style.color = 'green';
+            log('🔌 Connected to server: ' + socket.id);
+        });
+
+        socket.on('disconnect', (reason) => {
+            statusDiv.innerHTML = '❌ Disconnected: ' + reason;
+            statusDiv.style.color = 'red';
+            log('🔌 Disconnected from server: ' + reason);
+        });
+
+        socket.on('connect_error', (error) => {
+            statusDiv.innerHTML = '❌ Connection Error: ' + error.message;
+            statusDiv.style.color = 'red';
+            log('🔌 Connection error: ' + error.message);
+        });
+
+        socket.on('reconnect', (attemptNumber) => {
+            statusDiv.innerHTML = '🔄 Reconnected after ' + attemptNumber + ' attempts';
+            statusDiv.style.color = 'orange';
+            log('🔌 Reconnected after ' + attemptNumber + ' attempts');
+        });
+
+        socket.on('reconnect_attempt', (attemptNumber) => {
+            log('🔌 Reconnection attempt ' + attemptNumber);
+        });
+
+        socket.on('reconnect_error', (error) => {
+            log('🔌 Reconnection error: ' + error.message);
+        });
+
+        socket.on('reconnect_failed', () => {
+            statusDiv.innerHTML = '❌ Reconnection failed after maximum attempts';
+            statusDiv.style.color = 'red';
+            log('🔌 Reconnection failed after maximum attempts');
+        });
+
+        socket.on('error', (error) => {
+            log('🔌 Socket error: ' + error.message);
+        });
+
+        // Test join game
+        setTimeout(() => {
+            if (socket.connected) {
+                log('🎮 Testing join game...');
+                socket.emit('join_game', { gameId: 'test-game', playerAddress: '0x123' });
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
+
+
+
+
+

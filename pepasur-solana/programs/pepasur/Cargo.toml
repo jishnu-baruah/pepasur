@@ -1,0 +1,30 @@
+[package]
+name = "pepasur"
+version = "0.1.0"
+description = "Pepasur - On-chain Mafia game on Solana"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "pepasur"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build"]
+anchor-debug = []
+custom-heap = []
+custom-panic = []
+event-cpi = ["anchor-lang/event-cpi"]
+
+[dependencies]
+anchor-lang = { version = "0.31.0", features = ["init-if-needed"] }
+
+[dev-dependencies]
+solana-program-test = "~1.18"
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(target_os, values("solana"))'] }

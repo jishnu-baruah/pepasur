@@ -1,0 +1,23 @@
+.anchor
+.DS_Store
+target
+**/*.rs.bk
+node_modules
+test-ledger
+.yarn
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# AI Assistant directories
+.claude/
+.kiro/
+
+# Markdown files (except README)
+*.md
+!README.md
+!**/README.md
